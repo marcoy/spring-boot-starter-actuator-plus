@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -72,5 +74,12 @@ public class ActuatorPlusConfigurationPropsTest implements ApplicationContextAwa
 
         assertThat(bean).isNotNull();
         assertThat(bean.getUrlMappings()).isEqualTo(Collections.singleton(url));
+    }
+
+    @Test
+    public void testDeadlockDetector() {
+        final HealthIndicator deadlockDetector = applicationContext.getBean("deadlockDetector", HealthIndicator.class);
+        assertThat(deadlockDetector).isNotNull();
+        assertThat(deadlockDetector.health().getStatus()).isEqualTo(Status.UP);
     }
 }

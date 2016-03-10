@@ -14,6 +14,8 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 import org.assertj.core.util.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.MetricsDropwizardAutoConfiguration;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
@@ -24,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Configuration
 @EnableMetrics
@@ -60,6 +63,19 @@ public class ActuatorPlusConfiguration extends MetricsConfigurerAdapter {
         healthCheckRegistry.register("deadlock-check"
                 , new ThreadDeadlockHealthCheck(new ThreadDeadlockDetector()));
         return new ServletRegistrationBean(new HealthCheckServlet(healthCheckRegistry), url);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "actuator-plus", name = "enable-deadlock-detector", havingValue = "true")
+    public HealthIndicator deadlockDetector() {
+        return () -> {
+            final Set<String> deadlockThreads = new ThreadDeadlockDetector().getDeadlockedThreads();
+            if (deadlockThreads.isEmpty()) {
+                return Health.up().build();
+            } else {
+                return Health.down().withDetail("deadLockThreads", deadlockThreads).build();
+            }
+        };
     }
 
     @Override

@@ -41,6 +41,11 @@ public class ActuatorPlusConfigurationTest implements ApplicationContextAware {
         applicationContext.getBean("threadDumpServlet");
     }
 
+    @Test(expected = NoSuchBeanDefinitionException.class)
+    public void testDeadLockDetector() {
+        applicationContext.getBean("deadlockDetector");
+    }
+
     @Test
     public void testMetricRegistryConfiguration() {
         // Some JVM metrics

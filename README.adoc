@@ -47,10 +47,12 @@ public class DemoController {
 
 You can use the following properties to customize actuator plus.
 ----
-management.context-path           = /admin
-actuator-plus.enable-jvm-metrics  = false
-actuator-plus.enable-health-check = true
-actuator-plus.health-check-url    = /health-check
-actuator-plus.enable-thread-dump  = true
-actuator-plus.thread-dump-url     = /thread-dump
+actuator-plus.enable-jvm-metrics       = false
+actuator-plus.enable-health-check      = true
+actuator-plus.health-check-url         = /health-check
+actuator-plus.enable-thread-dump       = true
+actuator-plus.thread-dump-url          = /thread-dump
+actuator-plus.enable-deadlock-detector = true
+
+management.context-path                = /admin
 ----
