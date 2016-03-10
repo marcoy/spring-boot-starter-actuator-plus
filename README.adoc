@@ -1,0 +1,39 @@
+= SpringBoot Actuator Plus
+
+== Actuator plus a little more
+This is one convenient package to combine actuator from SpringBoot with 
+http://metrics.dropwizard.io[Dropwizard's `MetricRegistry`]. In addition to the endpoints
+being added by actuator (e.g. `/beans`, `/info`, `/mappings`, and etc...), `ActuatorPlus` has
+the ability to register the `HealthCheckServlet` and `ThreadDumpServlet`
+from https://dropwizard.github.io/metrics/3.1.0/manual/servlets/[Dropwizard Metrics].
+
+== Usage
+All you need is to do is to annotate your java configuration with `@EnableActuatorPlus`.
+
+[source,java]
+.Java configuration
+----
+@SpringBootApplication
+@EnableActuatorPlus // <1>
+public class MyConfiguration {
+    @Autowired
+    private MetricRegistry registry; // <2>
+
+    @Autowired
+    private HealthCheckRegistry healthCheckRegistry; // <2>
+
+    // ...
+}
+----
+<1> Just annotate your configuration class.
+<2> These are declared by `metrics-spring`. There is no need to define your own.
+
+You can use the following properties to customize actuator plus.
+----
+management.context-path           = /admin
+actuator-plus.enable-jvm-metrics  = false
+actuator-plus.enable-health-check = true
+actuator-plus.health-check-url    = /health-check
+actuator-plus.enable-thread-dump  = true
+actuator-plus.thread-dump-url     = /thread-dump
+----
