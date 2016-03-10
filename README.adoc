@@ -28,6 +28,23 @@ public class MyConfiguration {
 <1> Just annotate your configuration class.
 <2> These are declared by `metrics-spring`. There is no need to define your own.
 
+Moreover, you can use the `@Timed`, `@Metered`, `@ExceptionMetered`, and `@Counted` annotations
+from `metrcis-spring`
+
+[source,java]
+----
+@RestController
+public class DemoController {
+    @Timed // <1>
+    @RequestMapping("/hello")
+    public String hello() {
+        return "world";
+    }
+}
+----
+<1> Timing information for `hello()` will be exposed through JMX,
+    as well as, through the `/metrics` actuator endpoint.
+
 You can use the following properties to customize actuator plus.
 ----
 management.context-path           = /admin
